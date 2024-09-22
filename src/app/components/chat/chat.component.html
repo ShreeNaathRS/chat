@@ -1,0 +1,48 @@
+<div class="chat-container">
+    <div class="chat-header">
+        <form class="entry-form" [formGroup]="entryForm" (submit)="enterChatRoom()">
+            <mat-form-field class="name">
+              <mat-label>Name</mat-label>
+              <input formControlName="name" matInput placeholder="Ex. name">
+              <mat-error *ngIf="entryForm.controls['name'].errors && entryForm.controls['name'].errors.required">Required</mat-error>
+              <mat-error *ngIf="entryForm.controls['name'].errors && entryForm.controls['name'].errors.minlength">Minlength: {{entryForm.controls['name'].errors.minlength.requiredLength}}</mat-error>
+            </mat-form-field>
+            <button class="submit-button" type="submit" mat-raised-button color="primary">Enter</button>
+            <button [disabled]="!isConnected" (click)="leaveChatRoom()" type="button" class="submit-button" mat-raised-button color="warn">Leave</button>
+        </form>
+    </div>
+    <div *ngIf="isConnected" class="chat-body">
+        <div class="body-header">
+            Chat box
+        </div>
+        <mat-divider></mat-divider>
+        <div class="body-scrollable-area">
+            <div *ngFor="let message of receivedMessages">
+                <div [ngSwitch]="message.type">
+                    <div class="align-center" *ngSwitchCase="'JOIN'">{{message.sender}} has joined</div>
+                    <div class="align-center" *ngSwitchCase="'LEAVE'">{{message.sender}} has left</div>
+                    <div *ngSwitchCase="'CHAT'" class="chat-message">
+                        <div class="message-sender">
+                            {{message.sender.substring(0,1)}}
+                        </div>
+                        <div>
+                            {{message.content}}
+                        </div>
+                    </div>
+                    <div *ngSwitchDefault></div>
+                </div>
+            </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="body-footer">
+            <form class="message-form" [formGroup]="messageForm" (submit)="sendMessage()">
+                <mat-form-field class="message">
+                <mat-label>Message</mat-label>
+                <input formControlName="message" matInput placeholder="Enter message">
+                <mat-error *ngIf="messageForm.controls['message'].touched && messageForm.controls['message'].errors && messageForm.controls['message'].errors.required">Required</mat-error>
+                </mat-form-field>
+                <button class="send-button" type="submit" mat-raised-button color="primary">Send</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+<button (click)="onSendMessage()">
+    Send Test Message
+</button>
+<ol>
+    <li class="message" *ngFor="let message of receivedMessages">
+        {{ message }}
+    </li>
+</ol>

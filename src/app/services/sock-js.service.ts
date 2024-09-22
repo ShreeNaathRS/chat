@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import * as SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
+import { ChatMessage, MessageType } from '../models/chat-message';
 
 @Injectable({
   providedIn: 'root'
@@ -30,14 +31,19 @@ export class SockJsService {
   }
 
   private successCallback() {
-    this.subscriptions.push(this.stompClient.subscribe('/topic/public', ((message) => {
+    this.subscriptions.push(this.stompClient.subscribe('/topic/public', ((message: Stomp.Frame) => {
       this.websocketMessage.next(message)
     })))
 
   }
 
   sendMessage() {
-    this.stompClient.send('/topic/public', {}, "Hi sent")
+    const chatMessage: ChatMessage = {
+      content: 'This is the main content sent through web socket',
+      sender: 'R S Shree Naath',
+      type: MessageType.CHAT
+    }
+    this.stompClient.send('/topic/public', {}, JSON.stringify(chatMessage))
   }
 
   public disconnect() {
